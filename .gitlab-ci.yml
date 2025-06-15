@@ -1,0 +1,42 @@
+stages:
+  - build
+  - publish-to-maven
+  - publish-to-gitlab
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+  - chmod +x ./gradlew
+
+build:
+  stage: build
+  tags:
+    - build
+  only:
+    - branches
+    - tags
+  script:
+    - ./gradlew assemble -Pversion=${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
+    - ./gradlew test
+
+publish-to-gitlab:
+  stage: publish-to-gitlab
+  tags:
+    - build
+  only:
+    - branches
+  script:
+    - ./gradlew publish -Pversion=${CI_COMMIT_REF_NAME}-${CI_COMMIT_SHORT_SHA}
+
+publish-to-maven:
+  stage: publish-to-maven
+  tags:
+    - build
+  only:
+    - tags
+  script:
+    - ./gradlew assemble -Pversion=$CI_COMMIT_TAG
+    - ./gradlew test
+    - ./gradlew publish -Pversion=$CI_COMMIT_TAG
