@@ -88,13 +88,12 @@ publishing {
         if (isReleaseVersion) {
             maven {
                 name = "MavenCentral"
-                url = uri("https://central.sonatype.com/ossrh-staging/deploy/maven2/")
+                url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
                 credentials {
                     username = System.getenv("SONATYPE_USER_TOKEN_USER")
                     password = System.getenv("SONATYPE_USER_TOKEN_PASS")
                 }
             }
-
         } else {
             maven {
                 url = uri("${System.getenv("CI_API_V4_URL")}/projects/${System.getenv("CI_PROJECT_ID")}/packages/maven")
