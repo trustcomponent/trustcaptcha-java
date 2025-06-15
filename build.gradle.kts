@@ -2,6 +2,7 @@ plugins {
     id("java")
     id("maven-publish")
     id("signing")
+    id("io.github.gradle-nexus.publish-plugin") version "2.0.0"
 }
 
 group = "com.trustcomponent"
@@ -26,21 +27,15 @@ dependencies {
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.9.2")
 }
 
-tasks.getByName<Test>("test") {
-    useJUnitPlatform()
-}
+tasks.withType<Test> { useJUnitPlatform() }
+tasks.withType<JavaCompile> { options.encoding = "UTF-8" }
 
-tasks.withType<JavaCompile> {
-    options.encoding = "UTF-8"
-}
-
-val sourceJar = tasks.register<Jar>("sourceJar") {
-    from(sourceSets.getByName("main").allSource)
+val sourceJar by tasks.registering(Jar::class) {
+    from(sourceSets["main"].allSource)
     archiveClassifier.set("sources")
 }
-
-val javadocJar = tasks.register<Jar>("javadocJar") {
-    from(tasks.named("javadoc"))
+val javadocJar by tasks.registering(Jar::class) {
+    from(tasks["javadoc"])
     archiveClassifier.set("javadoc")
 }
 
@@ -59,42 +54,26 @@ publishing {
                 name.set("TrustCaptcha - CAPTCHA for Java")
                 description.set("TrustCaptcha – Privacy-first CAPTCHA solution for Java. GDPR-compliant, bot protection made in Europe. Compatible with Kotlin, Scala and Groovy.")
                 url.set("https://www.trustcomponent.com/en/products/captcha/integrations/java-captcha")
-
-                licenses {
-                    license {
-                        name.set("The Apache License, Version 2.0")
-                        url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
-                    }
-                }
-
+                licenses { license {
+                    name.set("The Apache License, Version 2.0")
+                    url.set("https://www.apache.org/licenses/LICENSE-2.0.txt")
+                } }
                 scm {
                     connection.set("scm:git:https://github.com/trustcomponent/trustcaptcha-java.git")
                     developerConnection.set("scm:git:ssh://git@github.com/trustcomponent/trustcaptcha-java.git")
                     url.set("https://github.com/trustcomponent/trustcaptcha-java")
                 }
-
-                developers {
-                    developer {
-                        name.set("TrustComponent")
-                        email.set("mail@trustcomponent.com")
-                        organization.set("Trustcaptcha GmbH")
-                        organizationUrl.set("https://www.trustcomponent.com/en")
-                    }
-                }
+                developers { developer {
+                    name.set("TrustComponent")
+                    email.set("mail@trustcomponent.com")
+                    organization.set("Trustcaptcha GmbH")
+                    organizationUrl.set("https://www.trustcomponent.com/en")
+                } }
             }
         }
     }
     repositories {
-        if (isReleaseVersion) {
-            maven {
-                name = "MavenCentral"
-                url = uri("https://ossrh-staging-api.central.sonatype.com/service/local/staging/deploy/maven2/")
-                credentials {
-                    username = System.getenv("SONATYPE_USER_TOKEN_USER")
-                    password = System.getenv("SONATYPE_USER_TOKEN_PASS")
-                }
-            }
-        } else {
+        if (!isReleaseVersion) {
             maven {
                 url = uri("${System.getenv("CI_API_V4_URL")}/projects/${System.getenv("CI_PROJECT_ID")}/packages/maven")
                 name = "GitLab"
@@ -111,14 +90,26 @@ publishing {
 }
 
 signing {
-    useInMemoryPgpKeys(System.getenv("SIGNING_KEY_ID"), System.getenv("SIGNING_PRIVATE_KEY"), System.getenv("SIGNING_PASSWORD"))
+    useInMemoryPgpKeys(
+        System.getenv("SIGNING_KEY_ID"),
+        System.getenv("SIGNING_PRIVATE_KEY"),
+        System.getenv("SIGNING_PASSWORD")
+    )
     isRequired = System.getenv("SIGNING_KEY_ID") != null
+    publishing.publications.withType<MavenPublication>().configureEach { sign(this) }
+}
 
-    publishing.publications.withType<MavenPublication>().configureEach {
-        sign(this)
+nexusPublishing {
+    repositories {
+        sonatype {
+            nexusUrl.set(uri("https://ossrh-staging-api.central.sonatype.com/service/local/"))
+            snapshotRepositoryUrl.set(uri("https://central.sonatype.com/repository/maven-snapshots/"))
+            username.set(System.getenv("SONATYPE_USER_TOKEN_USER"))
+            password.set(System.getenv("SONATYPE_USER_TOKEN_PASS"))
+        }
     }
 }
 
-tasks.register("publishToGitLab") {
-    dependsOn("publish")
+afterEvaluate {
+    tasks.findByName("publishToSonatype")?.finalizedBy("closeAndReleaseSonatypeStagingRepository")
 }

@@ -39,4 +39,4 @@ publish-to-maven:
   script:
     - ./gradlew assemble -Pversion=$CI_COMMIT_TAG
     - ./gradlew test
-    - ./gradlew publish -Pversion=$CI_COMMIT_TAG
+    - ./gradlew publishToSonatype closeAndReleaseSonatypeStagingRepository -Pversion=$CI_COMMIT_TAG
