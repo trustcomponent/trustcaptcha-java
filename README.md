@@ -52,7 +52,7 @@ try {
 
 3. Act on the result
 ```java
-// Do something with the verification result
+// Act on the verification result
 if (!verificationResult.getVerificationPassed() || verificationResult.getScore() > 0.5) {
     logger.warn("Verification failed or bot score > 0.5 – possible automated request.");
 }
