@@ -21,7 +21,7 @@ public class CaptchaManager {
     public static VerificationResult getVerificationResult(String secretKey, String base64verificationToken, String platform) throws CaptchaFailureException {
 
         VerificationToken verificationToken = getVerificationToken(base64verificationToken);
-        String urlAsString = verificationToken.getApiEndpoint() + "/verifications/" + verificationToken.getVerificationId() + "/assessments";
+        String urlAsString = "https://api.trustcomponent.com/verifications/" + verificationToken.getVerificationId() + "/assessments";
 
         try {
             URL url = new URL(urlAsString);
@@ -32,6 +32,10 @@ public class CaptchaManager {
             connection.setRequestProperty("tc-library-language", "jvm");
             connection.setRequestProperty("tc-library-platform", platform);
             connection.setRequestProperty("tc-library-version", "2.0");
+
+            connection.setInstanceFollowRedirects(false);
+            connection.setConnectTimeout(3000);
+            connection.setReadTimeout(5000);
 
             int responseCode = connection.getResponseCode();
             if (responseCode == 403) {
@@ -55,9 +59,8 @@ public class CaptchaManager {
 
     private static VerificationToken getVerificationToken(String verificationToken) throws VerificationTokenInvalidException {
 
-        String decodedVerificationToken = new String(Base64.getDecoder().decode(verificationToken));
-
         try {
+            String decodedVerificationToken = new String(Base64.getDecoder().decode(verificationToken));
             return mapper.readValue(decodedVerificationToken, VerificationToken.class);
         } catch (Exception e) {
             throw new VerificationTokenInvalidException();
