@@ -11,7 +11,7 @@ java.sourceCompatibility = JavaVersion.VERSION_17
 version = if (project.hasProperty("version")) {
     project.version
 } else {
-    "0.0.1-SNAPSHOT" // Fallback-Version
+    "3.0.0-SNAPSHOT" // Fallback-Version
 }
 
 val isReleaseVersion = System.getenv("CI_COMMIT_TAG") != null

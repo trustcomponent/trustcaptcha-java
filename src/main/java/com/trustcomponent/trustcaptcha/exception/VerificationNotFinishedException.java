@@ -3,6 +3,6 @@ package com.trustcomponent.trustcaptcha.exception;
 public class VerificationNotFinishedException extends CaptchaFailureException {
 
     public VerificationNotFinishedException() {
-        super("Verification not finished yet. Please wait and try again later.");
+        super("The verification is not yet completed. Please wait until the user has finished solving the captcha before requesting the result.");
     }
 }

@@ -1,10 +1,12 @@
 package com.trustcomponent.trustcaptcha.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.UUID;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class VerificationResult {
     @JsonProperty("captchaId")
     @NotNull
@@ -14,16 +16,28 @@ public class VerificationResult {
     @NotNull
     private final UUID verificationId;
 
+    @JsonProperty("verificationPassed")
+    private final boolean verificationPassed;
+
     @JsonProperty("score")
     private final double score;
 
-    @JsonProperty("reason")
+    @JsonProperty("decisionType")
     @NotNull
-    private final String reason;
+    private final String decisionType;
 
-    @JsonProperty("mode")
+    @JsonProperty("decisionAction")
     @NotNull
-    private final String mode;
+    private final String decisionAction;
+
+    @JsonProperty("gatewayFailoverActive")
+    private final boolean gatewayFailoverActive;
+
+    @JsonProperty("riskScoringEnabled")
+    private final boolean riskScoringEnabled;
+
+    @JsonProperty("minimalDataModeEnabled")
+    private final boolean minimalDataModeEnabled;
 
     @JsonProperty("origin")
     @NotNull
@@ -32,6 +46,10 @@ public class VerificationResult {
     @JsonProperty("ipAddress")
     @NotNull
     private final String ipAddress;
+
+    @JsonProperty("countryCode")
+    @NotNull
+    private final String countryCode;
 
     @JsonProperty("deviceFamily")
     @NotNull
@@ -45,120 +63,88 @@ public class VerificationResult {
     @NotNull
     private final String browser;
 
-    @JsonProperty("creationTimestamp")
+    @JsonProperty("verificationStartedAt")
     @NotNull
-    private final String creationTimestamp;
+    private final String verificationStartedAt;
 
-    @JsonProperty("releaseTimestamp")
+    @JsonProperty("verificationFinishedAt")
     @NotNull
-    private final String releaseTimestamp;
+    private final String verificationFinishedAt;
 
-    @JsonProperty("retrievalTimestamp")
+    @JsonProperty("resultExpiresAt")
     @NotNull
-    private final String retrievalTimestamp;
+    private final String resultExpiresAt;
 
-    @JsonProperty("verificationPassed")
-    private final boolean verificationPassed;
+    @JsonProperty("resultFirstFetchedAt")
+    @NotNull
+    private final String resultFirstFetchedAt;
 
+    @JsonProperty("resultLastFetchedAt")
+    @NotNull
+    private final String resultLastFetchedAt;
 
     public VerificationResult(
             @JsonProperty("captchaId") @NotNull UUID captchaId,
             @JsonProperty("verificationId") @NotNull UUID verificationId,
+            @JsonProperty("verificationPassed") boolean verificationPassed,
             @JsonProperty("score") double score,
-            @JsonProperty("reason") @NotNull String reason,
-            @JsonProperty("mode") @NotNull String mode,
+            @JsonProperty("decisionType") @NotNull String decisionType,
+            @JsonProperty("decisionAction") @NotNull String decisionAction,
+            @JsonProperty("gatewayFailoverActive") boolean gatewayFailoverActive,
+            @JsonProperty("riskScoringEnabled") boolean riskScoringEnabled,
+            @JsonProperty("minimalDataModeEnabled") boolean minimalDataModeEnabled,
             @JsonProperty("origin") @NotNull String origin,
             @JsonProperty("ipAddress") @NotNull String ipAddress,
+            @JsonProperty("countryCode") @NotNull String countryCode,
             @JsonProperty("deviceFamily") @NotNull String deviceFamily,
             @JsonProperty("operatingSystem") @NotNull String operatingSystem,
             @JsonProperty("browser") @NotNull String browser,
-            @JsonProperty("creationTimestamp") @NotNull String creationTimestamp,
-            @JsonProperty("releaseTimestamp") @NotNull String releaseTimestamp,
-            @JsonProperty("retrievalTimestamp") @NotNull String retrievalTimestamp,
-            @JsonProperty("verificationPassed") boolean verificationPassed
+            @JsonProperty("verificationStartedAt") @NotNull String verificationStartedAt,
+            @JsonProperty("verificationFinishedAt") @NotNull String verificationFinishedAt,
+            @JsonProperty("resultExpiresAt") @NotNull String resultExpiresAt,
+            @JsonProperty("resultFirstFetchedAt") @NotNull String resultFirstFetchedAt,
+            @JsonProperty("resultLastFetchedAt") @NotNull String resultLastFetchedAt
     ) {
         this.captchaId = captchaId;
         this.verificationId = verificationId;
+        this.verificationPassed = verificationPassed;
         this.score = score;
-        this.reason = reason;
-        this.mode = mode;
+        this.decisionType = decisionType;
+        this.decisionAction = decisionAction;
+        this.gatewayFailoverActive = gatewayFailoverActive;
+        this.riskScoringEnabled = riskScoringEnabled;
+        this.minimalDataModeEnabled = minimalDataModeEnabled;
         this.origin = origin;
         this.ipAddress = ipAddress;
+        this.countryCode = countryCode;
         this.deviceFamily = deviceFamily;
         this.operatingSystem = operatingSystem;
         this.browser = browser;
-        this.creationTimestamp = creationTimestamp;
-        this.releaseTimestamp = releaseTimestamp;
-        this.retrievalTimestamp = retrievalTimestamp;
-        this.verificationPassed = verificationPassed;
+        this.verificationStartedAt = verificationStartedAt;
+        this.verificationFinishedAt = verificationFinishedAt;
+        this.resultExpiresAt = resultExpiresAt;
+        this.resultFirstFetchedAt = resultFirstFetchedAt;
+        this.resultLastFetchedAt = resultLastFetchedAt;
     }
 
-    @NotNull
-    public final UUID getCaptchaId() {
-        return this.captchaId;
-    }
-
-    @NotNull
-    public final UUID getVerificationId() {
-        return this.verificationId;
-    }
-
-    public final double getScore() {
-        return this.score;
-    }
-
-    @NotNull
-    public final String getReason() {
-        return this.reason;
-    }
-
-    @NotNull
-    public final String getMode() {
-        return this.mode;
-    }
-
-    @NotNull
-    public final String getOrigin() {
-        return this.origin;
-    }
-
-    @NotNull
-    public final String getIpAddress() {
-        return this.ipAddress;
-    }
-
-    @NotNull
-    public final String getDeviceFamily() {
-        return this.deviceFamily;
-    }
-
-    @NotNull
-    public final String getOperatingSystem() {
-        return this.operatingSystem;
-    }
-
-    @NotNull
-    public final String getBrowser() {
-        return this.browser;
-    }
-
-    @NotNull
-    public final String getCreationTimestamp() {
-        return this.creationTimestamp;
-    }
-
-    @NotNull
-    public final String getReleaseTimestamp() {
-        return this.releaseTimestamp;
-    }
-
-    @NotNull
-    public final String getRetrievalTimestamp() {
-        return this.retrievalTimestamp;
-    }
-
-    public boolean isVerificationPassed() {
-        return verificationPassed;
-    }
+    @NotNull public final UUID getCaptchaId() { return captchaId; }
+    @NotNull public final UUID getVerificationId() { return verificationId; }
+    public final boolean isVerificationPassed() { return verificationPassed; }
+    public final double getScore() { return score; }
+    @NotNull public final String getDecisionType() { return decisionType; }
+    @NotNull public final String getDecisionAction() { return decisionAction; }
+    public final boolean isGatewayFailoverActive() { return gatewayFailoverActive; }
+    public final boolean isRiskScoringEnabled() { return riskScoringEnabled; }
+    public final boolean isMinimalDataModeEnabled() { return minimalDataModeEnabled; }
+    @NotNull public final String getOrigin() { return origin; }
+    @NotNull public final String getIpAddress() { return ipAddress; }
+    @NotNull public final String getCountryCode() { return countryCode; }
+    @NotNull public final String getDeviceFamily() { return deviceFamily; }
+    @NotNull public final String getOperatingSystem() { return operatingSystem; }
+    @NotNull public final String getBrowser() { return browser; }
+    @NotNull public final String getVerificationStartedAt() { return verificationStartedAt; }
+    @NotNull public final String getVerificationFinishedAt() { return verificationFinishedAt; }
+    @NotNull public final String getResultExpiresAt() { return resultExpiresAt; }
+    @NotNull public final String getResultFirstFetchedAt() { return resultFirstFetchedAt; }
+    @NotNull public final String getResultLastFetchedAt() { return resultLastFetchedAt; }
 }
-

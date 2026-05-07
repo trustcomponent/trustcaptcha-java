@@ -35,7 +35,7 @@ Need a walkthrough? See the [Java integration guide](https://www.trustcomponent.
 <dependency>
     <groupId>com.trustcomponent</groupId>
     <artifactId>trustcaptcha</artifactId>
-    <version>2.0.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ Need a walkthrough? See the [Java integration guide](https://www.trustcomponent.
 // Retrieving the verification result
 VerificationResult verificationResult;
 try {
-    verificationResult = CaptchaManager.getVerificationResult("<your_secret_key>", "<verification_token_from_your_client>");
+    verificationResult = TrustCaptcha.getVerificationResult("<your_api_key>", "<verification_token_from_your_client>");
 } catch (CaptchaFailureException e) {
     // Fetch verification result failed - handle error
 }
@@ -53,7 +53,7 @@ try {
 3. Act on the result
 ```java
 // Act on the verification result
-if (!verificationResult.getVerificationPassed() || verificationResult.getScore() > 0.5) {
+if (!verificationResult.isVerificationPassed() || verificationResult.getScore() > 0.5) {
     logger.warn("Verification failed or bot score > 0.5 – possible automated request.");
 }
 ```

@@ -3,6 +3,6 @@ package com.trustcomponent.trustcaptcha.exception;
 public class VerificationNotFoundException extends CaptchaFailureException {
 
     public VerificationNotFoundException() {
-        super("The verification result could not be found. It might be that the result was already retrieved earlier.");
+        super("No verification could be found for the given verification token.");
     }
 }

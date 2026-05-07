@@ -9,29 +9,25 @@ import java.util.UUID;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class VerificationToken {
 
-    @JsonProperty("apiEndpoint")
-    @NotNull
-    private final String apiEndpoint;
-
     @JsonProperty("verificationId")
     @NotNull
     private final UUID verificationId;
 
-    public VerificationToken(
-            @JsonProperty("apiEndpoint") @NotNull String apiEndpoint,
-            @JsonProperty("verificationId") @NotNull UUID verificationId
-    ) {
-        this.apiEndpoint = apiEndpoint;
-        this.verificationId = verificationId;
-    }
+    @JsonProperty("clientFailover")
+    private final boolean clientFailover;
 
-    @NotNull
-    public String getApiEndpoint() {
-        return this.apiEndpoint;
+    public VerificationToken(@JsonProperty("verificationId") @NotNull UUID verificationId,
+                             @JsonProperty("clientFailover") boolean clientFailover) {
+        this.verificationId = verificationId;
+        this.clientFailover = clientFailover;
     }
 
     @NotNull
     public final UUID getVerificationId() {
         return this.verificationId;
+    }
+
+    public final boolean isClientFailover() {
+        return this.clientFailover;
     }
 }
