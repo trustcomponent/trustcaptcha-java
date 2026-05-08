@@ -40,7 +40,7 @@ public final class TrustCaptcha {
         if (b.apiKey == null || b.apiKey.isEmpty()) {
             throw new IllegalArgumentException("apiKey must not be null or empty");
         }
-        this.apiKey = b.apiKey;
+        this.apiKey = b.apiKey.trim();
         this.apiHost = b.apiHost;
         this.connectTimeoutMs = b.connectTimeoutMs;
         this.readTimeoutMs = b.readTimeoutMs;
